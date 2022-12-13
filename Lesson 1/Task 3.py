@@ -15,6 +15,8 @@ dict = {
     x < 0 and y > 0: 'This point is located in a second quarter',
     x < 0 and y < 0: 'This point is located in a third quarter',
     x > 0 and y < 0: 'This point is located in a fourth quarter',
+    x == 0 and y != 0: 'This point is located on the X coordinate line',
+    x != 0 and y == 0: 'This point is located on the Y coordinate line',
     x == 0 and y == 0: 'This point is a center of the coordiante system'
 }
 
