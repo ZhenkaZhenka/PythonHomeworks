@@ -7,13 +7,11 @@ k = int(input('How many elements you want to multiply? '))
 
 list = [i for i in range(-n, n+1)]
 
-list2 = []
-
 result = 1
 
 with open('Task4.txt', 'w') as text:
     while k != 0:
-        set_ok = False
+        set_ok = False #просто поупражняться как работает, лучше ли это выносить в отдельный метод?
         while(set_ok != True):
             try:
                 print('Input index of number:')
@@ -29,10 +27,7 @@ with open('Task4.txt', 'w') as text:
 
 with open('Task4.txt', 'r') as text:
     for l in text:
-        list2.append(int(l))
-
-for i in list2:
-    result *= list[i]
+        result *= list[int(l)]
 
 print('Array from -N until N:')
 print(list)

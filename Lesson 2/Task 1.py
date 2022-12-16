@@ -18,10 +18,10 @@ def GetNumber(set_ok):
 number = GetNumber(set_ok)
 
 summ_of_number = 0
-
+# Ниже, я избавляюсь от дробной части, перенося ее в целую
 while (number % 10 != 0):
     number *= 10
-
+#Ниже, вкладываю цифры в числе
 while(int(number) != 0):
     summ_of_number += (int(number) % 10)
     number /= 10
