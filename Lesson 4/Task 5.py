@@ -10,28 +10,30 @@ k2 = int(input('Input second degree: '))
 nameOfFile1 = 'Task 5, first polynomial.txt'
 nameOfFile2 = 'Task 5, second polynomial.txt'
 nameOfFile3 = 'Task 5, result polynomial.txt'
-list1 = []
-list2 = []
-list3 = []
+mult1stPolynomial = []  # Список с множителями первого многочлена
+mult2ndPolynomial = []  # Список с множителями второго многочлена
+resultMultipliers = []  # Список с суммой множителей многочленов
 
 
-def GetPolynomial(k, name):
+def GetPolynomial(k, name):  # Получение и запись многочлена в файл
     with open(name, 'w') as file:
-        if k > 1:
+        if k > 1:  # Если введеный коэфициент < 2, то выражение не является многочленом
             while k > 0:
                 n = randint(0, 100)
                 if k > 1:
                     if n > 0:
+                        # получим запись "Nx**k+"
                         file.write(str(n) + 'x**' + str(k) + '+')
                     elif n == 1:
+                        # При N = 1 получим запись "x**k+""
                         file.write('x**' + str(k) + '+')
-                else:
+                else:  # Условие для k == 1
                     if n > 0:
-                        file.write(str(n) + 'x+')
+                        file.write(str(n) + 'x+')  # Получим запись "Nx+"
                     elif n == 1:
                         file.write('x+')
                 k -= 1
-            n = randint(0, 100)
+            n = randint(0, 100)  # Для k == 0
             if n > 0:
                 file.write(str(n))
             file.write('=0')
@@ -40,25 +42,28 @@ def GetPolynomial(k, name):
         file.write('\n')
     return
 
+
 def GetResultPolynomial(k, name, list):
     with open(name, 'w') as file:
-        if k > 1:
+        if k > 1:  # Если введеный коэфициент < 2, то выражение не является многочленом
             index = 0
             while k > 0:
                 n = list[index]
                 if k > 1:
                     if n > 0:
+                        # получим запись "Nx**k+"
                         file.write(str(n) + 'x**' + str(k) + '+')
                     elif n == 1:
+                        # При N = 1 получим запись "x**k+""
                         file.write('x**' + str(k) + '+')
-                else:
+                else:                  # Условие для k == 1
                     if n > 0:
-                        file.write(str(n) + 'x+')
+                        file.write(str(n) + 'x+')  # Получим запись "Nx+"
                     elif n == 1:
                         file.write('x+')
                 index += 1
                 k -= 1
-            n = list[index]
+            n = list[index]  # Для k == 0
             if n > 0:
                 file.write(str(n))
             file.write('=0')
@@ -67,59 +72,69 @@ def GetResultPolynomial(k, name, list):
         file.write('\n')
     return
 
+
+# Получение списка из файла, путем разделения слагаемых многочлена
 def GetListFromText(nameOfFile, nameOfList):
     with open(nameOfFile, 'r') as file:
         for line in file:
             polynomial = line.split('+')
     return polynomial
 
-def GetList(list1, list2):
-    for i in range(len(list1)):
-        list3.append(int(list1[i]) + int(list2[i]))
-    return list3
 
-def GetMultipliers(string):
+# Сложение поиндексно двух списков с множителями
+def GetList(mult1stPolynomial, mult2ndPolynomial):
+    for i in range(len(mult1stPolynomial)):
+        resultMultipliers.append(
+            int(mult1stPolynomial[i]) + int(mult2ndPolynomial[i]))
+    return resultMultipliers
+
+
+def GetMultipliers(string):  # Получение множителя путем отсечения не циферной части
     index = 0
     newString = ''
     while string[index].isdigit():
         newString += string[index]
         index += 1
+    if not (newString.isdigit()):
+        newString = '0'
     return newString
-    
+
+
+def ChangeList(list):  # Запись множителя в список
+    newList = []
+    for i in range(len(list)):
+        newList.append(int(GetMultipliers(list[i])))
+    return newList
+
+
+# Если у многочленов разные коэфициенты, приравниваем длины списков с множителями для удобства сложения
 def IncreaseLengthOfList(list, diff):
     if diff > 0:
         while diff > 0:
-            list.insert(0,0)
+            list.insert(0, 0)
             diff -= 1
     return list
 
-def ChangeList(list):
-    newList = []
-    for i in range(len(list)):
-        newList.append(GetMultipliers(list[i]))
-    return newList
-
-def GetResult(list1, list2):
+#Получение суммы множителей многочленов для записи
+def GetResult(mult1stPolynomial, mult2ndPolynomial):
     diff = 0
-    if len(list1) > len(list2):
-        diff = len(list1) - len(list2)
-        list2 = IncreaseLengthOfList(list2, diff)
-        list3 = GetList(list1, list2)
+    if len(mult1stPolynomial) > len(mult2ndPolynomial):
+        diff = len(mult1stPolynomial) - len(mult2ndPolynomial)
+        mult2ndPolynomial = IncreaseLengthOfList(mult2ndPolynomial, diff)
+        list3 = GetList(mult1stPolynomial, mult2ndPolynomial)
     else:
-        diff = len(list2) - len(list1)
-        list1 = IncreaseLengthOfList(list1, diff)
-        list3 = GetList(list2, list1)
+        diff = len(mult2ndPolynomial) - len(mult1stPolynomial)
+        mult1stPolynomial = IncreaseLengthOfList(mult1stPolynomial, diff)
+        list3 = GetList(mult2ndPolynomial, mult1stPolynomial)
     return list3
 
 
 GetPolynomial(k1, nameOfFile1)
 GetPolynomial(k2, nameOfFile2)
-list1 = ChangeList(GetListFromText(nameOfFile1, list1))
-list2 = ChangeList(GetListFromText(nameOfFile2, list2))
 
-try:
-    list3 = GetResult(list1, list2)
-    GetResultPolynomial(len(list3) - 1, nameOfFile3, list3)
-    print('Look at files and compare result. Thank you for your attention!')
-except:
-    print("One of the files doesn't contain polynomial")
+mult1stPolynomial = ChangeList(GetListFromText(nameOfFile1, mult1stPolynomial))
+mult2ndPolynomial = ChangeList(GetListFromText(nameOfFile2, mult2ndPolynomial))
+resultMultipliers = GetResult(mult1stPolynomial, mult2ndPolynomial)
+
+GetResultPolynomial(len(resultMultipliers) - 1, nameOfFile3, resultMultipliers)
+print('Look at files and compare result. Thank you for your attention!')
