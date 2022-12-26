@@ -3,6 +3,8 @@
 # В решении мы создаем файлы с многочленами и файл с результатом. При каждом запуске пограммы многочлены в файлах заменяются на новые
 # Работает только если в обоих файлах находятся многочлены
 
+# Нужно добавить сложение многочленов с пропущенными слагаемыми, как Nx**k, при N==0. Мне пришла идея со словарями, надо будет ее опробовать
+
 from random import randint
 
 k1 = int(input('Input first degree: '))
@@ -12,10 +14,11 @@ nameOfFile2 = 'Task 5, second polynomial.txt'
 nameOfFile3 = 'Task 5, result polynomial.txt'
 mult1stPolynomial = []  # Список с множителями первого многочлена
 mult2ndPolynomial = []  # Список с множителями второго многочлена
-resultMultipliers = []  # Список с суммой множителей многочленов
+resPairsPowerMultipliers = {} # Словарь с парами Степень(ключ) - Множитель(значение)
 
 
-def GetPolynomial(k, name):  # Получение и запись многочлена в файл
+# Получение и запись многочлена в файл
+def GetPolynomial(k, name):  
     with open(name, 'w') as file:
         if k > 1:  # Если введеный коэфициент < 2, то выражение не является многочленом
             while k > 0:
@@ -43,27 +46,29 @@ def GetPolynomial(k, name):  # Получение и запись многочл
     return
 
 
-def GetResultPolynomial(k, name, list):
+#Получение и запись в файл суммы двух многочленов
+def GetResultPolynomial(name, resPairsPowerMultipliers):
+    key = max(k1, k2)
     with open(name, 'w') as file:
-        if k > 1:  # Если введеный коэфициент < 2, то выражение не является многочленом
+        if key > 1:  # Если введеный коэфициент < 2, то выражение не является многочленом
             index = 0
-            while k > 0:
-                n = list[index]
-                if k > 1:
+            while key > 0:
+                n = resPairsPowerMultipliers[key]
+                if key > 1:
                     if n > 0:
                         # получим запись "Nx**k+"
-                        file.write(str(n) + 'x**' + str(k) + '+')
+                        file.write(str(n) + 'x**' + str(key) + '+')
                     elif n == 1:
                         # При N = 1 получим запись "x**k+""
-                        file.write('x**' + str(k) + '+')
+                        file.write('x**' + str(key) + '+')
                 else:                  # Условие для k == 1
                     if n > 0:
                         file.write(str(n) + 'x+')  # Получим запись "Nx+"
                     elif n == 1:
                         file.write('x+')
                 index += 1
-                k -= 1
-            n = list[index]  # Для k == 0
+                key -= 1
+            n = resPairsPowerMultipliers[key]  # Для k == 0
             if n > 0:
                 file.write(str(n))
             file.write('=0')
@@ -88,8 +93,8 @@ def GetList(mult1stPolynomial, mult2ndPolynomial):
             int(mult1stPolynomial[i]) + int(mult2ndPolynomial[i]))
     return resultMultipliers
 
-
-def GetMultipliers(string):  # Получение множителя путем отсечения не циферной части
+# Получение множителя путем отсечения не циферной части
+def GetMultipliers(string):  
     index = 0
     newString = ''
     while string[index].isdigit():
@@ -99,42 +104,37 @@ def GetMultipliers(string):  # Получение множителя путем 
         newString = '0'
     return newString
 
-
-def ChangeList(list):  # Запись множителя в список
-    newList = []
-    for i in range(len(list)):
-        newList.append(int(GetMultipliers(list[i])))
-    return newList
-
-
-# Если у многочленов разные коэфициенты, приравниваем длины списков с множителями для удобства сложения
-def IncreaseLengthOfList(list, diff):
-    if diff > 0:
-        while diff > 0:
-            list.insert(0, 0)
-            diff -= 1
-    return list
-
-#Получение суммы множителей многочленов для записи
-def GetResult(mult1stPolynomial, mult2ndPolynomial):
-    diff = 0
-    if len(mult1stPolynomial) > len(mult2ndPolynomial):
-        diff = len(mult1stPolynomial) - len(mult2ndPolynomial)
-        mult2ndPolynomial = IncreaseLengthOfList(mult2ndPolynomial, diff)
-        list3 = GetList(mult1stPolynomial, mult2ndPolynomial)
+#Получаем ключ, возвращаем интовое значение
+def GetKey(string):
+    if 'x' in string:
+        if string[len(string) - 1] != 'x':
+            index = string.index('x')+3   ## 3 символа вправо потому-что "x**", чтоб начать сразу со степени
+            key = ''
+            while index <= len(string)-1 and string[index].isdigit():
+                key += string[index]
+                index += 1
+        else:
+            return 1
     else:
-        diff = len(mult2ndPolynomial) - len(mult1stPolynomial)
-        mult1stPolynomial = IncreaseLengthOfList(mult1stPolynomial, diff)
-        list3 = GetList(mult2ndPolynomial, mult1stPolynomial)
-    return list3
+        return 0
+    return int(key)
+
+# Создаем соварь с парами Степень(ключ) - Множитель(значение)
+def GetDictionary(list):
+    for i in range(len(list)):
+        key = GetKey(list[i])
+        value = int(GetMultipliers(list[i]))
+        if key in resPairsPowerMultipliers:
+            resPairsPowerMultipliers[key] += value
+        else:
+            resPairsPowerMultipliers[key] = value
 
 
 GetPolynomial(k1, nameOfFile1)
 GetPolynomial(k2, nameOfFile2)
 
-mult1stPolynomial = ChangeList(GetListFromText(nameOfFile1, mult1stPolynomial))
-mult2ndPolynomial = ChangeList(GetListFromText(nameOfFile2, mult2ndPolynomial))
-resultMultipliers = GetResult(mult1stPolynomial, mult2ndPolynomial)
+mult1stPolynomial = GetDictionary(GetListFromText(nameOfFile1, mult1stPolynomial))
+mult2ndPolynomial = GetDictionary(GetListFromText(nameOfFile2, mult2ndPolynomial))
 
-GetResultPolynomial(len(resultMultipliers) - 1, nameOfFile3, resultMultipliers)
+GetResultPolynomial(nameOfFile3, resPairsPowerMultipliers)
 print('Look at files and compare result. Thank you for your attention!')
