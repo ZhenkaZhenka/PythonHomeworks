@@ -6,15 +6,13 @@
 # Вывод: [1, 9, 13, 14, 19]
 import random
 
-firstList = list(enumerate(random.sample(range(-5, 5), 10)))
+firstList = list(enumerate(random.sample(range(-15, 20), 10)))
 minValue = int(input('Input min value to filter: '))
 maxValue = int(input('Input max value to filter: '))
 
-print(firstList)
+print(list(x[1] for x in firstList))
 
 filteredList = list(filter(lambda x: x[1] >= minValue and x[1] <= maxValue, firstList))
-
-print(filteredList)
 
 indexList = [x[0] for x in filteredList]
 
