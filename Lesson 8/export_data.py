@@ -29,28 +29,69 @@ def ShowStudents():
     print('Export successful')
     return
 
-## Показывает все оценки выбранного ученика
-def ShowEvaluationsOfOneStudent():
-    name = CheckTheName('Input name of student to see evaluations:')
-    if name == None:
-        print('you didnt want to fill in name of student')
-        return
+## Формирует словарь с оценками выбранного ученика
+def GetEvaluationsOfOneStudent(name, marker):
     temp_list = id.GettingList('List of subjects')
     temp_dict = {}
     for i in temp_list:
         temp_dict2 = id.GetDictOfNames(i)
-        temp_dict[i] = temp_dict2[name]
+        if marker: # Если marker == True, то выводятся все оценки ученика
+            temp_dict[i] = temp_dict2[name]
+        else:       #Если marker == False, то выводится средняя оценка ученика по каждому предмету
+            temp_dict[i] = GetMiddleEvaluaton(temp_dict2[name])
         temp_dict2.clear()
-    print('Evaluations of', name.replace(':', ' '), 'in every subjects are:')
+    return temp_dict
+
+
+# Метод с выводом оценок выбранного ученика
+def ShowEvaluationsOfOneStudent(marker):
+    name = CheckTheName('Input name of student to see evaluations:')
+    if name == None:
+        print('you didnt want to fill in name of student')
+        return
+    temp_dict = GetEvaluationsOfOneStudent(name, marker)
+    if marker:
+        print('Evaluations of', name.replace(':', ' '), 'in every subjects are:')
+    else:
+        print('Middle valuations of', name.replace(':', ' '), 'in every subjects are:')
     for i in temp_dict.keys():
         print('{}: {}'.format(i, temp_dict[i]))
     return
 
+
+##Считает среднюю оценку ученика
+def GetMiddleEvaluaton(string):
+    list = string.split(',')
+    sum = 0
+    for i in range(len(list)-1):
+        sum += int(list[i])
+    return round(sum/(len(list)-1), 2)
+
+## Показывает среднюю оценку каждого ученика по выбраному предмету
+def ShowMiddleEvaluationInSubject():
+    nameOfSubject = id.CheckSubject('You dont have this subject, be accurate', False)
+    temp_dict = id.GetDictOfNames(nameOfSubject)
+    for i in temp_dict.keys():
+        temp = temp_dict[i]
+        temp_dict[i] = GetMiddleEvaluaton(temp)# Разница
+    print('Middle evaluations of every student in', nameOfSubject, 'are:')
+    for i in temp_dict.keys():
+        print('{}\t{}'.format(i, temp_dict[i]))
+    return
+
+
+
 def Export():
     print('At this moment i can suggest to you watch at:\n*List of students\n*Evaluations of student')
+    print('"los" - List of students')
+    print('"eos" - Evaluations of one students')
+    print('"meof" - Middle evaluations of one student')
+    print('"meis" - Middle evaluations of every student in one subject')
     temp = input()
     match temp:
-        case 'List of students': ShowStudents()
-        case 'Evaluations': ShowEvaluationsOfOneStudent()
+        case 'los': ShowStudents()
+        case 'eos': ShowEvaluationsOfOneStudent(True)
+        case 'meof': ShowEvaluationsOfOneStudent(False)
+        case 'meos': ShowMiddleEvaluationInSubject()
         case _: print('i didnt get your choise')
     return
