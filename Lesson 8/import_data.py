@@ -126,14 +126,14 @@ def ImportRandomEval():
     return
 
 def Import():
-    print('What do you want to add?\n*Subject\n*Student\n*Evaluation\nstop\n')
-    print('Input "RandEvaluation" to add 5 random values to every student in every subject')
+    print('What do you want to add?\n1.Subject\n2.Student\n3.Evaluation\n4.RandEvaluation\n5.Stop working')
+    print('Input "5.RandEvaluation" to add 5 random values to every student in every subject')
     temp = input()
     match temp:
-        case 'Subject': GetSubject()# Добавить новый предмет
-        case 'Student': GetNewName()# Добавить ученика
-        case 'Evaluation': AddEvaluation()# Поставить оценку ученику по нужному предмету
-        case 'RandEvaluation': ImportRandomEval()# Поставить каждому ученику по 5 случайных оценок по всем предметам
-        case 'stop': return# Остановить работу и выйти в главное меню
+        case '1': GetSubject()# Добавить новый предмет
+        case '2': GetNewName()# Добавить ученика
+        case '3': AddEvaluation()# Поставить оценку ученику по нужному предмету
+        case '4': ImportRandomEval()# Поставить каждому ученику по 5 случайных оценок по всем предметам
+        case '5': return# Остановить работу и выйти в главное меню
         case _: print('I didnt understand you, try again or input "stop"')
     return

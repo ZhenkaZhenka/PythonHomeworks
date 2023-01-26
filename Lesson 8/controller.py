@@ -3,7 +3,7 @@ import export_data as ed
 
 def Start():
     print('Hello, what do you want to do?')
-    print('import, if you want to add somesthing\nexport, if you want to see something\n')
+    print('import, if you want to add somesthing\nexport, if you want to see something\nstop, if you want to stop work')
     temp2 = True
     while temp2:
         temp = input('*import\n*export\n')

@@ -82,16 +82,16 @@ def ShowMiddleEvaluationInSubject():
 
 
 def Export():
-    print('At this moment i can suggest to you watch at:\n*List of students\n*Evaluations of student')
-    print('"los" - List of students')
-    print('"eos" - Evaluations of one students')
-    print('"meof" - Middle evaluations of one student')
-    print('"meis" - Middle evaluations of every student in one subject')
+    print('At this moment i can suggest to you watch at:')
+    print('1.List of students')
+    print('2.Evaluations of one students')
+    print('3.Middle evaluations of one student')
+    print('4.Middle evaluations of every student in one subject')
     temp = input()
     match temp:
-        case 'los': ShowStudents()
-        case 'eos': ShowEvaluationsOfOneStudent(True)
-        case 'meof': ShowEvaluationsOfOneStudent(False)
-        case 'meos': ShowMiddleEvaluationInSubject()
+        case '1': ShowStudents()
+        case '2': ShowEvaluationsOfOneStudent(True)
+        case '3': ShowEvaluationsOfOneStudent(False)
+        case '4': ShowMiddleEvaluationInSubject()
         case _: print('i didnt get your choise')
     return
