@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 from random import randint
 
-TOKEN = 'Место для вашего токена'
+TOKEN = '5986683594:AAFD8A7mc40KL-7SOatR3Jzmeml8Sd_iGmg'
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -14,20 +14,22 @@ type = 2
 
 @bot.message_handler(commands = ["start"])
 def start(message):
-    bot.send_message(message.chat.id, "/Посмотреть кнопки")##Реакция бота на команду /start
+    bot.send_message(message.chat.id, "/buttons")##Реакция бота на команду /start
 
 
-@bot.message_handler(commands = ["Посмотреть кнопки"])
+@bot.message_handler(commands = ["buttons"])
 def button1(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard = True)##
     but1 = types.KeyboardButton("Rules")
     but2 = types.KeyboardButton("PlayerVsPlayer")
     but3 = types.KeyboardButton("PlayerVsBot")
     but4 = types.KeyboardButton("PlayerVsCleverBot")
+    but5 = types.KeyboardButton("Stop")
     markup.add(but1)
     markup.add(but2)
     markup.add(but3)
     markup.add(but4)
+    markup.add(but5)
     bot.send_message(message.chat.id, "Выберите ниже", reply_markup = markup)
 
 def button2(message):
@@ -59,9 +61,8 @@ def controller(message):
 def rules(message):
     bot.send_message(message.chat.id, "Условие задачи: На столе лежит 221 конфета. "
                                       "Играют два игрока делая ход друг после друга. "
-                                      "Первый ход определяется жеребьёвкой."
-                                        "За один ход можно забрать не более чем 28 конфет."
-                                       " Все конфеты оппонента достаются сделавшему последний ход.")
+                                        "За один ход можно забрать не более чем 28 конфет. "
+                                      "Побеждает тот кто забирает последнюю конфету")
     button1(message)
 def playervsplayerstart(message):
     global amount_of_candies
@@ -97,14 +98,16 @@ def playervsplayer1player(message):
 def turn1player(message):
     global max_amount_of_candies
     global player_amount
-
-    player_amount = int(message.text)
-    if (player_amount <= max_amount_of_candies and player_amount >= 0):
-        count1player(message)
-    else:
+    try:
+        player_amount = int(message.text)
+        if (player_amount <= max_amount_of_candies and player_amount >= 0):
+            count1player(message)
+        else:
+            e
+    except Exception as e:
         bot.send_message(message.chat.id,
-                         'Input amount of candies from 0 to' + str(max_amount_of_candies))
-        playervsplayer1player(message)
+                         'Input integer amount of candies from 0 to ' + str(max_amount_of_candies))
+        bot.register_next_step_handler(message, turn1player)
 
 
 def count1player(message):
@@ -151,13 +154,16 @@ def checkwinner():
 def turn2player(message):
     global max_amount_of_candies
     global player_amount
-    player_amount = int(message.text)
-    if player_amount <= max_amount_of_candies and player_amount >= 0:
-        countplayer2(message)
-    else:
+    try:
+        player_amount = int(message.text)
+        if (player_amount <= max_amount_of_candies and player_amount >= 0):
+            count1player(message)
+        else:
+            e
+    except Exception as e:
         bot.send_message(message.chat.id,
-                         'Input amount of candies from 0 to' + str(max_amount_of_candies))
-        playervsplayer2player(message)
+                         'Input integer amount of candies from 0 to ' + str(max_amount_of_candies))
+        bot.register_next_step_handler(message, turn1player)
 
 ##Здесь начинаются методы игры против бота
 def playervsbotstart(message):
@@ -209,13 +215,16 @@ def countplayer(message):
 def turnplayer(message):
     global max_amount_of_candies
     global player_amount
-    player_amount = int(message.text)
-    if (player_amount <= max_amount_of_candies and player_amount >= 0):
-        countplayer(message)
-    else:
+    try:
+        player_amount = int(message.text)
+        if (player_amount <= max_amount_of_candies and player_amount >= 0):
+            count1player(message)
+        else:
+            e
+    except Exception as e:
         bot.send_message(message.chat.id,
-                         'Input amount of candies from 0 to' + str(max_amount_of_candies))
-        playervsbotplayer(message)
+                         'Input integer amount of candies from 0 to ' + str(max_amount_of_candies))
+        bot.register_next_step_handler(message, turn1player)
 
 def playervsbotbot(message):
     global amount_of_candies
