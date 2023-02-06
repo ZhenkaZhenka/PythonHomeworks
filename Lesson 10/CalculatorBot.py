@@ -3,7 +3,7 @@ import logger as log
 from telebot import types
 
 
-TOKEN = 'Input your token'
+TOKEN = '5986683594:AAFD8A7mc40KL-7SOatR3Jzmeml8Sd_iGmg'
 
 bot = telebot.TeleBot(TOKEN)
 
